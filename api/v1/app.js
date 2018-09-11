@@ -102,6 +102,26 @@ app.get( '/api/v1/orders', (req, res) => {
 }); // </endpoint: 4>
 
 
+// GET: get a single order using the object's ID attribute (i.e the order's ID) <endpoint: 5>
+app.get('/api/v1/orders/:id', (req, res) => {
+  const id = parseInt( req.params.id, 10 ); // Converts the the string of the `id` attribute's value to an `integer` of base `10`
+
+  //Search for the order using the supplied ID
+  ordersDB.map( (order) => {
+    if( order.id === id ) {
+      return res.status(200).send({
+        success: 'true',
+        message: 'Order retrieved successfully',
+        order: order
+      });
+    }
+  });
+  return res.status(404).send({
+    success: 'false',
+    message: `An order with the ID ${id} does not exist`
+  });
+}); // </endpoint: 5>
+
 
 /* HTTP methods section ...ends */
 
