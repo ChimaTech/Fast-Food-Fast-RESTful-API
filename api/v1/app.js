@@ -174,14 +174,14 @@ app.post('/api/v1/orders', (req, res) => {
 
     const foodsArray = foodsList.split(',');
 
-    // Declare & Define an `object` variable that will hold the `request` entry when it is successfully submitted
+    // Declare & Define an order `object` variable that will hold the `request` entry when it is successfully submitted
      const newOrder = {
        id: ordersDB.length + 1, // Sets the entry's ID (i.e the order's ID) in the dataBase
        foods: foodsArray,
        total: Number(req.body.total)
      }
 
-     // Push the entry now called ` newUser` into the dataBase
+     // Push the entry now called ` newOrder` into the dataBase
      ordersDB.push(newOrder);
      return res.status(201).send({ // Return success code: 201 && send the following responses:
        success: 'true',
