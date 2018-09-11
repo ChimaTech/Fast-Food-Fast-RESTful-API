@@ -44,7 +44,7 @@ app.get('/api/v1/users/:id', (req, res) => {
   });
   return res.status(404).send({
     success: 'false',
-    message: `todo with the title ${title} does not exist`
+    message: `User with the ID ${id} does not exist`
   });
 }); // </endpoint: 2>
 
