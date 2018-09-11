@@ -49,6 +49,52 @@ app.get('/api/v1/users/:id', (req, res) => {
 }); // </endpoint: 2>
 
 
+// POST: post an entry to the dataBase (i.e. SIGN UP a user) <endpoint: 3>
+app.post('/api/v1/users', (req, res) => {
+
+  if ( !req.body.name && !req.body.email && !req.body.password ) { // Checks whether Name, email and password are supplied
+    return res.status(400).send({
+      success: 'false',
+      message: 'Name, Email and Password are required',
+    });
+  }
+  else if ( !req.body.name && !req.body.email && req.body.password ) { // Chechs whether Name and email are supplied
+    return res.status(400).send({
+      success: 'false',
+      message: 'Name and Email are required',
+    });
+  }
+  else if ( !req.body.name && req.body.email && req.body.password ) { // Chechs whether Name is supplied
+    return res.status(400).send({
+      success: 'false',
+      message: 'Name is required',
+    });
+  }
+  else if ( req.body.name && req.body.email && req.body.password ) { // What to do when Name, email and password are supplied
+    // Declare & Define an `object` variable that will hold the `request` entry when it is successfully submitted
+     const newUser = {
+       id: usersDB.length + 1, // Sets the entry's ID (i.e the user's ID) in the dataBase
+       name: req.body.name,
+       email: req.body.email,
+       password: req.body.password
+     }
+
+     // Push the entry now called ` newUser` into the dataBase
+     usersDB.push(newUser);
+     return res.status(201).send({ // Return success code: 201 && send the following responses:
+       success: 'true',
+       message: 'New user signed is successful',
+       newUser
+     });
+
+  }
+
+
+
+}); // </endpoint: 3>
+
+
+
 /* HTTP methods section ...ends */
 
 
