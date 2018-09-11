@@ -56,19 +56,43 @@ app.post('/api/v1/users', (req, res) => {
   if ( !req.body.name && !req.body.email && !req.body.password ) { // Checks whether Name, email and password are supplied
     return res.status(400).send({
       success: 'false',
-      message: 'Name, Email and Password are required',
+      message: 'Name, Email and Password are required'
     });
   }
   else if ( !req.body.name && !req.body.email && req.body.password ) { // Chechs whether Name and email are supplied
     return res.status(400).send({
       success: 'false',
-      message: 'Name and Email are required',
+      message: 'Name and Email are required'
     });
   }
   else if ( !req.body.name && req.body.email && req.body.password ) { // Chechs whether Name is supplied
     return res.status(400).send({
       success: 'false',
-      message: 'Name is required',
+      message: 'Name is required'
+    });
+  }
+  else if ( req.body.name && !req.body.email && !req.body.password ) { // Chechs whether Email and Password are supplied
+    return res.status(400).send({
+      success: 'false',
+      message: 'Email and Password are required'
+    });
+  }
+  else if ( req.body.name && req.body.email && !req.body.password ) { // Chechs whether Password is supplied
+    return res.status(400).send({
+      success: 'false',
+      message: 'Password is required'
+    });
+  }
+  else if ( req.body.name && !req.body.email && req.body.password ) { // Chechs whether Email is supplied
+    return res.status(400).send({
+      success: 'false',
+      message: 'Email is required'
+    });
+  }
+  else if ( !req.body.name && req.body.email && !req.body.password ) { // Chechs whether Name and Password are supplied
+    return res.status(400).send({
+      success: 'false',
+      message: 'Name and Password are required'
     });
   }
   else if ( req.body.name && req.body.email && req.body.password ) { // What to do when Name, email and password are supplied
@@ -121,6 +145,54 @@ app.get('/api/v1/orders/:id', (req, res) => {
     message: `An order with the ID ${id} does not exist`
   });
 }); // </endpoint: 5>
+
+
+// POST: post an entry to the orders dataBase (i.e. place a new order) <endpoint: 6>
+app.post('/api/v1/orders', (req, res) => {
+
+  if ( !req.body.foodsArray && !req.body.total ) { // Checks whether List of foods; and Total cost are supplied
+    return res.status(400).send({
+      success: 'false',
+      message: 'List of foods; and Total cost are required'
+    });
+  }
+  else if ( !req.body.foodsArray && req.body.total ) { // Chechs whether List of foods are supplied
+    return res.status(400).send({
+      success: 'false',
+      message: 'List of foods are required'
+    });
+  }
+  else if ( req.body.foodsArray && !req.body.total ) { // Chechs whether total cost supplied
+    return res.status(400).send({
+      success: 'false',
+      message: 'Total cost of foods is required'
+    });
+  }
+  else if ( req.body.foodsArray && req.body.total ) { // List of foods; and Total cost are supplied
+
+    const foodsList = req.body.foodsArray;
+
+    const foodsArray = foodsList.split(',');
+
+    // Declare & Define an `object` variable that will hold the `request` entry when it is successfully submitted
+     const newOrder = {
+       id: ordersDB.length + 1, // Sets the entry's ID (i.e the order's ID) in the dataBase
+       foods: foodsArray,
+       total: Number(req.body.total)
+     }
+
+     // Push the entry now called ` newUser` into the dataBase
+     ordersDB.push(newOrder);
+     return res.status(201).send({ // Return success code: 201 && send the following responses:
+       success: 'true',
+       message: 'New order placement is successful',
+       newOrder
+     });
+
+  }
+
+}); // </endpoint: 6>
+
 
 
 /* HTTP methods section ...ends */

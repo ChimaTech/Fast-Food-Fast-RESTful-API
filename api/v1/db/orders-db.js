@@ -3,8 +3,8 @@ const orders = [
     id: 1,
 
     foods: [
-      {"Rice": 20},
-      { "Akamu": 50}
+      "Rice",
+      "Akamu"
     ],
 
     total: 70
