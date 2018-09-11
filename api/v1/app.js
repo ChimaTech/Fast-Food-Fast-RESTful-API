@@ -1,6 +1,7 @@
 import express from 'express'; // Imports the `Express` module
-import usersDB from './db/users-db'; // Imports the dataBase (i.e `db.js`) module
+import usersDB from './db/users-db'; // Imports the Users dataBase (i.e `users-db.js`) module
 import bodyParser from 'body-parser'; // Imports `Body-Parser` module
+import ordersDB from './db/orders-db'; // Imports the dataBase (i.e `orders-db.js`) module
 
 
 // Set up the express app
@@ -89,9 +90,16 @@ app.post('/api/v1/users', (req, res) => {
 
   }
 
-
-
 }); // </endpoint: 3>
+
+// GET: get all All Orders <endpoint: 4>
+app.get( '/api/v1/orders', (req, res) => {
+  res.status(200).send({
+    success: 'true',
+    message: 'All orders retrieved successfully',
+   users: ordersDB
+  });
+}); // </endpoint: 4>
 
 
 
