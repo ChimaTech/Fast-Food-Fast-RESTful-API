@@ -16,6 +16,22 @@ NOTE: MiddleWares section ...begins
 app.use( bodyParser.json() );
 app.use( bodyParser.urlencoded( { extended: false } ) );
 
+String.prototype.encodeStr = function(){
+    let encoded;
+    let i;
+
+    let result = "";
+
+    for (i = 0; i < this.length; i++) {
+        encoded = this.charCodeAt(i).toString(36);
+
+        result += encoded;
+
+    }
+
+    return result;
+}
+
 
 /* MiddleWares section ...ends */
 
@@ -55,19 +71,33 @@ app.post('/api/v1/sessions', (req, res) => {
   }
   else if ( req.body.email && req.body.password ) { // What to do when email and password are supplied
 
-     // Declare && Define an `object` variable to hold the session's entry in the sessionsDB
-     let newSession = {
-         token: `${req.body.email.toUpperCase()}/${req.body.password}`, // Set a token for the new User
-         email: req.body.email
-       };
+    let userID = `${req.body.email.toUpperCase().encodeStr()}${req.body.password.encodeStr()}`;
 
-     sessionsDB.push(newSession); // Push the new session entry now called ` newSession` into the dataBase
+    usersDB.map( (user) => {
 
-     return res.status(201).send({ // Return success code: 201 && send the following responses:
-       success: 'true',
-       message: 'New user sign-in is successful',
-       newSession
-     });
+      if ( user.id === userID ) {
+        // Declare && Define an `object` variable to hold the session's entry in the sessionsDB
+        let newSession = {
+            token: `${req.body.email.toUpperCase().encodeStr()}${req.body.password.encodeStr()}`, // Set a token for the new User
+            email: req.body.email
+          };
+
+          sessionsDB.push(newSession); // Push the new session entry now called ` newSession` into the dataBase
+
+          return res.status(201).send({ // Return success code: 201 && send the following responses:
+            success: 'true',
+            message: 'New user sign-in is successful',
+            newSession
+          });
+
+      }
+    });
+
+    return res.status(401).send({
+      success: 'false',
+      message: 'Incorrect email or password',
+      userID
+    });
 
   }
 
@@ -122,7 +152,7 @@ app.post('/api/v1/users', (req, res) => {
   else if ( req.body.name && req.body.email && req.body.password ) { // What to do when Name, email and password are supplied
     // Declare & Define an `object` variable that will hold the `request` entry when it is successfully submitted
      const newUser = {
-       id: usersDB.length + 1, // Sets the entry's ID (i.e the user's ID) in the dataBase
+       id: `${req.body.email.toUpperCase().encodeStr()}${req.body.password.encodeStr()}`, // Sets the entry's ID (i.e the user's ID) in the dataBase
        name: req.body.name,
        email: req.body.email,
        password: req.body.password
@@ -130,7 +160,7 @@ app.post('/api/v1/users', (req, res) => {
 
      // Declare && Define an `object` variable to hold the session's entry in the sessionsDB
      let newSession = {
-         token: `${req.body.email.toUpperCase()}/${req.body.password}`, // Set a token for the new User
+         token: `${req.body.email.toUpperCase().encodeStr()}${req.body.password.encodeStr()}`, // Set a token for the new User
          email: req.body.email
        };
 
@@ -161,7 +191,8 @@ app.get( '/api/v1/orders', (req, res) => {
 
 // GET: get a single order using the object's ID attribute (i.e the order's ID) <endpoint: 5>
 app.get('/api/v1/orders/:id', (req, res) => {
-  const id = parseInt( req.params.id, 10 ); // Converts the the string of the `id` attribute's value to an `integer` of base `10`
+  // let id = parseInt(req.params.id, 10); // Converts the the string of the `id` attribute's value to an `integer` of base `10`
+  let id = req.params.id;
 
   //Search for the order using the supplied ID
   ordersDB.map( (order) => {
@@ -209,7 +240,7 @@ app.post('/api/v1/orders', (req, res) => {
 
     // Declare & Define an order `object` variable that will hold the `request` entry when it is successfully submitted
      const newOrder = {
-       id: ordersDB.length + 1, // Sets the entry's ID (i.e the order's ID) in the dataBase
+       id: `${foodsList.toUpperCase().encodeStr()}${req.body.total.toString().encodeStr()}`, // Sets the entry's ID (i.e the order's ID) in the dataBase
        foods: foodsArray,
        total: Number(req.body.total),
        status: "incoming"
@@ -230,7 +261,8 @@ app.post('/api/v1/orders', (req, res) => {
 
 //PUT: Update an entry in the dataBase (i.e Update the status of an order) <endpoint: 7>
 app.put('/api/v1/orders/:id', (req, res) => {
-  const id = parseInt(req.params.id, 10);
+  // let id = parseInt(req.params.id, 10);
+  let id = req.params.id;
   let orderFound;
   let orderFoundIndex;
 
