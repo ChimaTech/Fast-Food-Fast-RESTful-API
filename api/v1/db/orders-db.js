@@ -7,7 +7,9 @@ const orders = [
       "Akamu"
     ],
 
-    total: 70
+    total: 70,
+
+    status: "incoming"
 
   }
 ];
