@@ -1,7 +1,8 @@
 import express from 'express'; // Imports the `Express` module
 import usersDB from './db/users-db'; // Imports the Users dataBase (i.e `users-db.js`) module
 import bodyParser from 'body-parser'; // Imports `Body-Parser` module
-import ordersDB from './db/orders-db'; // Imports the dataBase (i.e `orders-db.js`) module
+import ordersDB from './db/orders-db'; // Imports the orders dataBase (i.e `orders-db.js`) module
+import sessionsDB from './db/sessions-db'; // Imports the sessions dataBase (i.e `sessions-db.js`) module
 
 
 // Set up the express app
@@ -31,22 +32,45 @@ app.get( '/api/v1/users', (req, res) => {
   });
 }); // </endpoint: 1>
 
-// GET: get a single user using the object's ID attribute (i.e LOGIN a User using the ID) <endpoint: 2>
-app.get('/api/v1/users/:id', (req, res) => {
-  const id = parseInt( req.params.id, 10 ); // Converts the the string of the `id` attribute's value to an `integer` of base `10`
-  usersDB.map( (user) => {
-    if( user.id === id ) {
-      return res.status(200).send({
-        success: 'true',
-        message: 'User retrieved successfully',
-        user: user
-      });
-    }
-  });
-  return res.status(404).send({
-    success: 'false',
-    message: `User with the ID ${id} does not exist`
-  });
+// POST: post a single user to the sessionsDB (i.e LOGIN a User using the email and password) <endpoint: 2>
+app.post('/api/v1/sessions', (req, res) => {
+
+  if ( !req.body.email && !req.body.password ) { // Checks whether email and password are supplied
+    return res.status(400).send({
+      success: 'false',
+      message: 'Email and Password are required'
+    });
+  }
+  else if ( !req.body.email && req.body.password ) { // Chechs whether an email is supplied
+    return res.status(400).send({
+      success: 'false',
+      message: 'Email is required'
+    });
+  }
+  else if ( req.body.email && !req.body.password ) { // Chechs whether password is supplied
+    return res.status(400).send({
+      success: 'false',
+      message: 'Password is required'
+    });
+  }
+  else if ( req.body.email && req.body.password ) { // What to do when email and password are supplied
+
+     // Declare && Define an `object` variable to hold the session's entry in the sessionsDB
+     let newSession = {
+         token: `${req.body.email.toUpperCase()}/${req.body.password}`, // Set a token for the new User
+         email: req.body.email
+       };
+
+     sessionsDB.push(newSession); // Push the new session entry now called ` newSession` into the dataBase
+
+     return res.status(201).send({ // Return success code: 201 && send the following responses:
+       success: 'true',
+       message: 'New user sign-in is successful',
+       newSession
+     });
+
+  }
+
 }); // </endpoint: 2>
 
 
@@ -102,14 +126,23 @@ app.post('/api/v1/users', (req, res) => {
        name: req.body.name,
        email: req.body.email,
        password: req.body.password
-     }
+     };
 
-     // Push the entry now called ` newUser` into the dataBase
-     usersDB.push(newUser);
+     // Declare && Define an `object` variable to hold the session's entry in the sessionsDB
+     let newSession = {
+         token: `${req.body.email.toUpperCase()}/${req.body.password}`, // Set a token for the new User
+         email: req.body.email
+       };
+
+
+     usersDB.push(newUser); // Push the new user entry now called ` newUser` into the dataBase
+     sessionsDB.push(newSession); // Push the new session entry now called ` newSession` into the dataBase
+
      return res.status(201).send({ // Return success code: 201 && send the following responses:
        success: 'true',
-       message: 'New user signed is successful',
-       newUser
+       message: 'New user signup is successful',
+       newUser,
+       newSession
      });
 
   }
