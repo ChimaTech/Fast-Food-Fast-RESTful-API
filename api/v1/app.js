@@ -195,6 +195,62 @@ app.post('/api/v1/orders', (req, res) => {
 }); // </endpoint: 6>
 
 
+//PUT: Update an entry in the dataBase (i.e Update the status of an order) <endpoint: 7>
+app.put('/api/v1/orders/:id', (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  let orderFound;
+  let orderFoundIndex;
+
+  // Iterate through the array of `objects` to find the one with matched ID attribute
+  ordersDB.map( (order, index) => {
+    if (order.id === id) { // When a match is found for the order ID
+      orderFound = order;
+      orderFoundIndex = index;
+
+      if ( !req.body.status ) { // What to do if the request body does not have a status attribute
+        return res.status(400).send({
+          success: 'false',
+          message: 'Status is required',
+        });
+      }
+      else if ( req.body.status ) { // What to do when the request body has a status attribute
+
+        const status = req.body.status;
+        const statusValue = status.toLowerCase();
+
+        // Ensure that the valid status is entered in the request
+         if ( statusValue === "accepted" || statusValue === "completed" || statusValue === "declined" ) {
+          orderFound.status = statusValue;
+
+          return res.status(201).send({ // HTTP status code ~201~ is used instead of ~204~ because the updated order is to be dispalyed to the user
+            success: 'true',
+            message: 'Order Status Updated successfully',
+            orderFound
+          });
+        }
+        else {
+          return res.status(400).send({
+            success: 'false',
+            message: 'Invalid status entered, check the spelling',
+          });
+        }
+
+      }
+
+    }
+
+  });
+
+  if (!orderFound) { // What to do if todo entry is not found
+    return res.status(404).send({ // Sends fail message
+      success: 'false',
+      message: 'Order not found',
+    });
+  }
+
+}); // </endpoint: 7>
+
+
 
 /* HTTP methods section ...ends */
 
