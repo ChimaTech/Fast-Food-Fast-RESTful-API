@@ -1,6 +1,5 @@
 import express from 'express'; // Imports the `Express` module
 import usersDB from '../db/users-db'; // Imports the Users dataBase (i.e `users-db.js`) module
-// import bodyParser from 'body-parser'; // Imports `Body-Parser` module
 import ordersDB from '../db/orders-db'; // Imports the orders dataBase (i.e `orders-db.js`) module
 import sessionsDB from '../db/sessions-db'; // Imports the sessions dataBase (i.e `sessions-db.js`) module
 

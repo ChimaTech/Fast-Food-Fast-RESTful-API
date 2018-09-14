@@ -20,6 +20,7 @@ app.use( bodyParser.urlencoded( { extended: false } ) );
 // Tell the `app` to `use` the MiddleWares of `router`
 app.use(router);
 
+// Set a new method of the String object's prototype, that will encode a sting -- this is mainly to generate tokens and IDs
 String.prototype.encodeStr = function(){
     let encoded;
     let i;
@@ -38,8 +39,6 @@ String.prototype.encodeStr = function(){
 
 
 /* MiddleWares section ...ends */
-
-
 
 
 /*
