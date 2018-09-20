@@ -31,3 +31,5 @@ app.listen(PORT, () => {
   console.log(`server running on port ${PORT}`);
 });
 /* Server Creation section ...ends */
+
+export default app; // Exports the `app` ( i.e equal to express() )

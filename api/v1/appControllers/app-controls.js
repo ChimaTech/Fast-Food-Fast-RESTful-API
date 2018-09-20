@@ -1,23 +1,7 @@
 import usersDB from '../db/users-db'; // Imports Users dataBase module
 import ordersDB from '../db/orders-db'; // Imports orders dataBase module
 import sessionsDB from '../db/sessions-db'; // Imports sessions dataBase module
-
-
-// Define a function that will encode a string into tokens and IDs
-function encodeStr(string) {
-  let encoded;
-  let i;
-
-  let result = '';
-
-  for (i = 0; i < string.length; i += 1) {
-    encoded = string.charCodeAt(i).toString(36);
-
-    result += encoded;
-  }
-
-  return result;
-}
+import encodeStr from './encodeStr'; // Imports `encodeStr` function
 
 
 /*
@@ -29,6 +13,7 @@ class AppController {
     this.res = res;
   }
   // HTTP methods (i.e. the endpoints) section ...begins
+
 
   // GET: get all users <endpoint: 1>
   getAllUsers(req, res) {
