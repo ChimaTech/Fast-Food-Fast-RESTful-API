@@ -32,4 +32,6 @@ app.listen(PORT, () => {
 });
 /* Server Creation section ...ends */
 
-export default app; // Exports the `app` ( i.e equal to express() )
+// export default app.listen(PORT); // Exports the `app` ( i.e equal to express() )
+
+module.exports = app.listen(3000);

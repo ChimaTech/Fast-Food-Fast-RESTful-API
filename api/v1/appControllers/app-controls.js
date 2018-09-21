@@ -2,6 +2,7 @@ import usersDB from '../db/users-db'; // Imports Users dataBase module
 import ordersDB from '../db/orders-db'; // Imports orders dataBase module
 import sessionsDB from '../db/sessions-db'; // Imports sessions dataBase module
 import encodeStr from './encodeStr'; // Imports `encodeStr` function
+import searchUser from './searchUser'; // Imports `searchUser` function
 
 
 /*
@@ -22,6 +23,7 @@ class AppController {
       message: 'Users retrieved successfully',
       users: usersDB,
     });
+
   } // </endpoint: 1>
 
   // POST: SIGN IN a User using the email and password <endpoint: 2>
@@ -31,44 +33,50 @@ class AppController {
         success: 'false',
         message: 'Email and Password are required',
       });
+
     }
     if (!req.body.email && req.body.password) { // Chechs whether an email is supplied
       return res.status(400).send({
         success: 'false',
         message: 'Email is required',
       });
+
     }
     if (req.body.email && !req.body.password) { // Chechs whether password is supplied
       return res.status(400).send({
         success: 'false',
         message: 'Password is required',
       });
+
     }
     if (req.body.email && req.body.password) { // What to do when email and password are supplied
-      const userID = `${encodeStr(req.body.email.toUpperCase())}${encodeStr(req.body.password)}`;
 
-      usersDB.map((user) => {
-        if (user.id === userID) {
-          // Declare && Define an `object` variable to hold the session's entry in the sessionsDB
-          const newSession = {
-            token: `${encodeStr(req.body.email.toUpperCase())}${encodeStr(req.body.password)}`, // Set a token for the new User
-            email: req.body.email,
-          };
+      let userEmail = req.body.email;
+      let userPassword = req.body.password;
 
-          sessionsDB.push(newSession); // Push the new session entry now called ` newSession` into the dataBase
+      if ( searchUser( userEmail, userPassword, usersDB ) === true ) {
+        // Declare && Define an `object` variable to hold the session's entry in the sessionsDB
+        const newSession = {
+          token: `${encodeStr(req.body.email.toUpperCase())}${encodeStr(req.body.password)}`, // Set a token for the new User
+          email: req.body.email,
+        };
+        // Push the new session entry now called ` newSession` into the dataBase
+        sessionsDB.push(newSession);
 
-          return res.status(201).send({ // Return success code: 201 && send the following responses:
-            success: 'true',
-            message: 'New user sign-in is successful',
-            newSession,
-          });
-        }
-      });
+        return res.status(201).send({ // return success code: 201 && send the following responses:
+          success: 'true',
+          message: 'New user sign-in is successful',
+          newSession
+        });
 
-      return res.status(401).send({
-        success: 'false',
-        message: 'Incorrect email or password',
-      });
+      }
+      else if ( searchUser( userEmail, userPassword, usersDB ) === false ) {
+        return res.status(401).send({
+          success: 'false',
+          message: 'Incorrect email or password'
+        });
+      }
+
     }
   } // </endpoint: 2>
 
@@ -80,42 +88,49 @@ class AppController {
         success: 'false',
         message: 'Name, Email and Password are required',
       });
+
     }
     if (!req.body.name && !req.body.email && req.body.password) { // Chechs whether Name and email are supplied
       return res.status(400).send({
         success: 'false',
         message: 'Name and Email are required',
       });
+
     }
     if (!req.body.name && req.body.email && req.body.password) { // Chechs whether Name is supplied
       return res.status(400).send({
         success: 'false',
         message: 'Name is required',
       });
+
     }
     if (req.body.name && !req.body.email && !req.body.password) { // Chechs whether Email and Password are supplied
       return res.status(400).send({
         success: 'false',
         message: 'Email and Password are required',
       });
+
     }
     if (req.body.name && req.body.email && !req.body.password) { // Chechs whether Password is supplied
       return res.status(400).send({
         success: 'false',
         message: 'Password is required',
       });
+
     }
     if (req.body.name && !req.body.email && req.body.password) { // Chechs whether Email is supplied
       return res.status(400).send({
         success: 'false',
         message: 'Email is required',
       });
+
     }
     if (!req.body.name && req.body.email && !req.body.password) { // Chechs whether Name and Password are supplied
       return res.status(400).send({
         success: 'false',
         message: 'Name and Password are required',
       });
+
     }
     if (req.body.name && req.body.email && req.body.password) { // What to do when Name, email and password are supplied
       // Declare & Define an `object` variable that will hold the `request` entry when it is successfully submitted
@@ -136,12 +151,13 @@ class AppController {
       usersDB.push(newUser); // Push the new user entry now called ` newUser` into the dataBase
       sessionsDB.push(newSession); // Push the new session entry now called ` newSession` into the dataBase
 
-      return res.status(201).send({ // Return success code: 201 && send the following responses:
+      return res.status(201).send({ // return success code: 201 && send the following responses:
         success: 'true',
         message: 'New user signup is successful',
         newUser,
         newSession,
       });
+
     }
   } // </endpoint: 3>
 
@@ -150,7 +166,7 @@ class AppController {
     res.status(200).send({
       success: 'true',
       message: 'All orders retrieved successfully',
-      users: ordersDB,
+      orders: ordersDB,
     });
   } // </endpoint: 4>
 
@@ -165,37 +181,42 @@ class AppController {
           message: 'Order retrieved successfully',
           order,
         });
+
       }
     });
     return res.status(404).send({
       success: 'false',
       message: `An order with the ID ${req.params.id} does not exist`,
     });
+
   } // </endpoint: 5>
 
 
   // POST: post an entry to the orders dataBase (i.e. place a new order) <endpoint: 6>
   placeOrder(req, res) {
-    if (!req.body.foodsArray && !req.body.total) { // Checks whether List of foods; and Total cost are supplied
+    if (!req.body.foodsList && !req.body.total) { // Checks whether List of foods; and Total cost are supplied
       return res.status(400).send({
         success: 'false',
         message: 'List of foods; and Total cost are required',
       });
+
     }
-    if (!req.body.foodsArray && req.body.total) { // Chechs whether List of foods are supplied
+    if (!req.body.foodsList && req.body.total) { // Chechs whether List of foods are supplied
       return res.status(400).send({
         success: 'false',
         message: 'List of foods are required',
       });
+
     }
-    if (req.body.foodsArray && !req.body.total) { // Chechs whether total cost supplied
+    if (req.body.foodsList && !req.body.total) { // Chechs whether total cost supplied
       return res.status(400).send({
         success: 'false',
         message: 'Total cost of foods is required',
       });
+
     }
-    if (req.body.foodsArray && req.body.total) { // List of foods; and Total cost are supplied
-      const foodsList = req.body.foodsArray;
+    if (req.body.foodsList && req.body.total) { // List of foods; and Total cost are supplied
+      const foodsList = req.body.foodsList;
 
       const foodsArray = foodsList.split(',');
 
@@ -209,11 +230,12 @@ class AppController {
 
       // Push the entry now called ` newOrder` into the dataBase
       ordersDB.push(newOrder);
-      return res.status(201).send({ // Return success code: 201 && send the following responses:
+      return res.status(201).send({ // return success code: 201 && send the following responses:
         success: 'true',
         message: 'New order placement is successful',
         newOrder,
       });
+
     }
   } // </endpoint: 6>
 
@@ -241,11 +263,28 @@ class AppController {
           if (statusValue === 'accepted' || statusValue === 'completed' || statusValue === 'declined') {
             orderFound.status = statusValue;
 
-            return res.status(201).send({ // HTTP status code ~201~ is used instead of ~204~ because the updated order is to be dispalyed to the user
-              success: 'true',
-              message: 'Order Status Updated successfully',
-              orderFound,
-            });
+            if (statusValue === 'accepted') {
+              return res.status(201).send({ // HTTP status code ~201~ is used instead of ~204~ because the updated order is to be dispalyed to the user
+                success: 'true',
+                message: 'Order has been accepted successfully',
+                orderFound,
+              });
+            }
+            else if (statusValue === 'completed') {
+              return res.status(201).send({ // HTTP status code ~201~ is used instead of ~204~ because the updated order is to be dispalyed to the user
+                success: 'true',
+                message: 'Order has been completed successfully',
+                orderFound,
+              });
+            }
+            else if (statusValue === 'declined') {
+              return res.status(201).send({ // HTTP status code ~201~ is used instead of ~204~ because the updated order is to be dispalyed to the user
+                success: 'true',
+                message: 'Order has been declined successfully',
+                orderFound,
+              });
+            }
+
           }
 
           return res.status(400).send({
@@ -262,6 +301,7 @@ class AppController {
         message: 'Order not found',
       });
     }
+
   } // </endpoint: 7>
 
   // HTTP methods section ...ends
