@@ -562,9 +562,6 @@ describe('/PUT "/api/v1/orders/:ID" request', () => {
               res.body.should.have.property('orderFound');
               res.body.orderFound.should.have.property('id').eql(orderID);
               res.body.orderFound.should.have.property('status').eql(status.status);
-              // res.body.newOrder.should.have.property('id').eql(orderID);
-              // res.body.newOrder.should.have.property('total').eql(order.total);
-              // res.body.newOrder.should.have.property('status').eql('incoming');
           done();
         });
   });
@@ -613,14 +610,6 @@ describe('/PUT "/api/v1/orders/:ID" request', () => {
         });
   });
 
-
-
-
-
-
-
 }); // </minor test suit>
-
-
 
 }); /* Orders Main test Suit... END */
