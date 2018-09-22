@@ -27,11 +27,11 @@ NOTE: Serve Creation section ...begins
 const PORT = 5000; // Definse the Port value
 
 // Create a server using port: 5000.
-app.listen(PORT, () => {
+module.exports = app.listen(PORT, () => {
   console.log(`server running on port ${PORT}`);
 });
 /* Server Creation section ...ends */
 
 // export default app.listen(PORT); // Exports the `app` ( i.e equal to express() )
 
-module.exports = app.listen(3000);
+// module.exports = app.listen(5000);
