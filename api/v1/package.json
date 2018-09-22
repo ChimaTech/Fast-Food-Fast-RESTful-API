@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "mocha": "mocha --require babel-core/register || true",
+    "mocha": "mocha --require babel-core/register || true --exit",
     "start": "nodemon app.js --exec babel-node --",
     "pretest": "eslint --ignore-path .gitignore .",
     "lintfix": "./node_modules/.bin/eslint --fix --ignore-path .gitignore ."
