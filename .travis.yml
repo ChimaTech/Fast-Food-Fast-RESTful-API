@@ -16,4 +16,7 @@ before_script:
   - npm install -g eslint-plugin-jsx-a11y
   - npm install -g eslint-plugin-react
   - npm install -g nodemon
+  - npm install -g mocha-lcov-reporter
+  - npm install -g coveralls
 script: npm run mocha
+after_success: coveralls
