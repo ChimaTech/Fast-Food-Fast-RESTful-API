@@ -18,5 +18,8 @@ before_script:
   - npm install -g nodemon
   - npm install -g mocha-lcov-reporter
   - npm install -g coveralls
+  - npm install -g istanbul
+  - npm install -g nyc
+  - npm install -g coveralls
 script: npm run mocha
-after_success: coveralls
+after_success: npm run coverage
