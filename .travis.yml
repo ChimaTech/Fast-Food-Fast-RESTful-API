@@ -1,0 +1,25 @@
+language: node_js
+node_js:
+  - "10.9.0"
+before_script:
+  - cd api/v1
+  - npm install -g babel-cli
+  - npm install -g babel-preset-es2015
+  - npm install -g body-parser
+  - npm install -g express
+  - npm install -g mocha
+  - npm install -g chai
+  - npm install -g chai-http
+  - npm install -g eslint
+  - npm install -g eslint-config-airbnb
+  - npm install -g eslint-plugin-import
+  - npm install -g eslint-plugin-jsx-a11y
+  - npm install -g eslint-plugin-react
+  - npm install -g nodemon
+  - npm install -g mocha-lcov-reporter
+  - npm install -g coveralls
+  - npm install -g istanbul
+  - npm install -g nyc
+  - npm install -g coveralls
+script: npm run mocha
+after_success: npm run coverage
