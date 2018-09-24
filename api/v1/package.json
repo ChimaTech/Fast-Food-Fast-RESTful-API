@@ -6,9 +6,6 @@
   "scripts": {
     "mocha": "nyc mocha --require babel-core/register || true --exit",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "cover": "istanbul cover mocha --require babel-core/register || true",
-    "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls",
-    "coverin": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "start": "nodemon app.js --exec babel-node --",
     "pretest": "eslint --ignore-path .gitignore .",
     "lintfix": "./node_modules/.bin/eslint --fix --ignore-path .gitignore ."
